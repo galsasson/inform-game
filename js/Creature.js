@@ -34,7 +34,7 @@ Creature.prototype.draw = function(ctx)
 	var brStr = "rgb("+Math.floor(brightness).toString()+","+Math.floor(brightness).toString()+","+Math.floor(brightness).toString()+")";
 	// console.log(brStr);
 	ctx.fillStyle = brStr;//"rgb("+brStr +"," + brStr + "," + brStr+")";
-	ctx.fillRect(-1, -1, 3, 3);
+	ctx.fillRect(-1.5, -1.5, 3, 3);
 	ctx.translate(-this.pos.x, -this.pos.y);
 }
 
