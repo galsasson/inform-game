@@ -24,7 +24,7 @@ var world = {};
 var time = 0;
 
 var player;
-var playerTarget = null;
+var playerObject;
 
 //***************************************************************************//
 // initialize the renderer, scene, camera, and lights                        //
@@ -94,16 +94,7 @@ function initSceneLights()
     // Create an ambient and a directional light to show off the object
     var dirLight = [];
     var ambLight = new THREE.AmbientLight( 0x777777 ); // soft white light
-    dirLight[0] = new THREE.DirectionalLight( 0xffffff, 1);
-    dirLight[0].position.set(0, 1, 1);
-    dirLight[0].casrShadow = true;
-    dirLight[1] = new THREE.DirectionalLight( 0xbbbbbb, 1);
-    dirLight[1].position.set(0, -1, -1);
-
     scene.add( ambLight );
-    // scene.add( dirLight[0] );
-    // scene.add( dirLight[1] );
-
 
     // object spotlight
     spotTargetRotation = new THREE.Object3D();
@@ -116,13 +107,13 @@ function initSceneLights()
     spotLight = new THREE.SpotLight(0xcccccc, 1);
     spotLight.angle = Math.PI/2;
     spotLight.exponent = 200;
-    spotLight.position = spotLightTarget.position;//.set(12, 40, 30);
+    spotLight.position = spotLightTarget.position;
     spotLight.target.position.set(0, 0, 0);
     spotLight.castShadow = true;
     spotLight.shadowCameraNear = 70;
     spotLight.shadowCameraFar = 140;
     spotLight.shadowDarkness = 0.7;
-    // spotLight.shadowCameraVisible = true;
+    spotLight.shadowCameraVisible = true;
     scene.add(spotLight);
 
 }
@@ -136,13 +127,15 @@ function populateScene()
     // var axes = buildAxes(300);
     // scene.add(axes);
 
+    player = new Player(45, 45);
+
     var geo = new THREE.SphereGeometry(0.6, 12, 12);
-    player = new THREE.Mesh(geo, resMgr.materials.character);
+    playerObject = new THREE.Mesh(geo, resMgr.materials.character);
     // player.rotation.x = -Math.PI/2;
-    player.position.set(0.5, 0, 0.5);
-    player.castShadow = true;
-    player.receiveShadow = true;
-    scene.add(player);
+    playerObject.position.set(0.5, 0, 0.5);
+    playerObject.castShadow = true;
+    playerObject.receiveShadow = true;
+    scene.add(playerObject);
 
     world = new World("art/test4.png");
 
@@ -150,7 +143,6 @@ function populateScene()
     inform.init();
     inform.rotation.x = -Math.PI/2;
     inform.applyHeights(world.getHeights());
-    // inform.transform(transFunc);
     scene.add(inform);
 }
 
@@ -166,6 +158,13 @@ function addGui()
     gui.add(inform, 'cooldown', 0, 1);
     gui.add(world.context, 'imageSmoothingEnabled');
     gui.add(world, 'absoluteHeight');
+
+    var lightFolder = gui.addFolder("spot light");
+    lightFolder.add(spotLight, "angle", 0, 2);
+    lightFolder.add(spotLight, "exponent", 10, 300);
+    lightFolder.add(spotLight, "shadowCameraNear", 0, 300);
+    lightFolder.add(spotLight, "shadowCameraFar", 0, 300);
+    lightFolder.add(spotLight, "shadowDarkness", 0, 1);
 /*
     var tmpF = f1.addFolder('Head Scale Vector');
     tmpF.add(genome.headJointsScaleFactor, 'x', 0.7, 1.2).onChange(onGeometryChanged);
@@ -221,33 +220,18 @@ function run()
 
     if (animating)
     {
-        if (keyPressed[38]) {
-            playerTarget = null;
-            world.propel(0.2);
-        }
-        else if (keyPressed[40]) {
-            playerTarget = null;
-            world.propel(-0.2);
-        }
-        if (keyPressed[37]) {
-            world.turn(0.01);
-        }
-        else if (keyPressed[39]) {
-            world.turn(-0.01);
-        }
+        // update player, world, and the inform table
+        player.update(keyPressed);
+        world.update(player.pos, player.rotation);
+        inform.applyHeights(world.getHeights());
 
-        world.update();
-        // handle player target (ride on monster)
-        if (playerTarget != null) {
-            world.pos.set(playerTarget.pos.x, playerTarget.pos.y, playerTarget.pos.z);
-        }
-        spotTargetRotation.rotation.y = -world.rotation;
+        // update lighting position
+        spotTargetRotation.rotation.y = -player.rotation;
         spotLight.position = spotLightTarget.localToWorld(new THREE.Vector3());
         spotLight.updateMatrix();
 
-        inform.applyHeights(world.getHeights());
-
-        player.position.y = inform.cubes[15+15*30].position.z + 2.5;
+        // for visualization: draw the character at the right height
+        playerObject.position.y = inform.cubes[15+15*30].position.z + 2.5;
     }
 
     // Ask for another frame
@@ -285,9 +269,9 @@ function onKeyDown(evt)
     }
     if (keyCode == 65) {    // a
         var a = new THREE.Vector3();
-        a.subVectors(world.pos, world.creature.pos);
+        a.subVectors(player.pos, world.creature.pos);
         if (a.length() < 3) {
-            playerTarget = world.creature;
+            player.attachTarget(world.creature);
         }
     }
 
