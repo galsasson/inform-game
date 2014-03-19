@@ -113,7 +113,7 @@ function initSceneLights()
     spotLight.shadowCameraNear = 70;
     spotLight.shadowCameraFar = 140;
     spotLight.shadowDarkness = 0.7;
-    spotLight.shadowCameraVisible = true;
+    // spotLight.shadowCameraVisible = true;
     scene.add(spotLight);
 
 }
@@ -158,13 +158,6 @@ function addGui()
     gui.add(inform, 'cooldown', 0, 1);
     gui.add(world.context, 'imageSmoothingEnabled');
     gui.add(world, 'absoluteHeight');
-
-    var lightFolder = gui.addFolder("spot light");
-    lightFolder.add(spotLight, "angle", 0, 2);
-    lightFolder.add(spotLight, "exponent", 10, 300);
-    lightFolder.add(spotLight, "shadowCameraNear", 0, 300);
-    lightFolder.add(spotLight, "shadowCameraFar", 0, 300);
-    lightFolder.add(spotLight, "shadowDarkness", 0, 1);
 /*
     var tmpF = f1.addFolder('Head Scale Vector');
     tmpF.add(genome.headJointsScaleFactor, 'x', 0.7, 1.2).onChange(onGeometryChanged);

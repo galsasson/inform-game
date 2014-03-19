@@ -1,3 +1,8 @@
+/* Perlin noise 
+ *
+ * taken from: http://mrl.nyu.edu/~perlin/transform/
+ */
+
    var noise = function(x, y, z) {
       var X = Math.floor(x)&255, Y = Math.floor(y)&255, Z = Math.floor(z)&255;
       x -= Math.floor(x); y -= Math.floor(y); z -= Math.floor(z);
