@@ -1,7 +1,7 @@
 
 var MAX_SPEED = 0.2;
 var MAX_ROT_SPEED = 0.15;
-var DEPTH_RANGE = 130;
+var DEPTH_RANGE = 300;
 
 World = function(pngFilename)
 {
@@ -17,7 +17,9 @@ World = function(pngFilename)
 	this.canvas.width = 30;
 	this.canvas.height = 30;
 	this.context = this.canvas.getContext("2d");
-	this.context.imageSmoothingEnabled = false;
+	// this.context.imageSmoothingEnabled = false;
+
+	this.creature = new Creature(120, 120);
 
 	this.img = new Image();
 	this.img.src = pngFilename;
@@ -31,6 +33,10 @@ World.prototype.imageLoaded = function()
 
 World.prototype.update = function()
 {
+	if (!this.loaded) {
+		return;
+	}
+
 	this.vel.add(this.acc);
 	if (this.vel.length() > MAX_SPEED) {
 		this.vel.setLength(MAX_SPEED);
@@ -57,6 +63,9 @@ World.prototype.update = function()
 	this.acc.set(0, 0);
 	this.rotAcc = 0;
 
+	// update the creature
+	this.creature.update();
+
 	// draw height map in current place
 	this.context.fillStyle = "rgb(0, 0, 0)";
 	this.context.fillRect(0, 0, 30, 30);
@@ -64,6 +73,7 @@ World.prototype.update = function()
 	this.context.rotate(this.rotation);
 	this.context.translate(-this.pos.x, -this.pos.y)
 	this.context.drawImage(this.img, 0, 0, this.img.width, this.img.height);
+	this.creature.draw(this.context);
 	this.context.translate(this.pos.x, this.pos.y);
 	this.context.rotate(-this.rotation);
 	this.context.translate(-15, -15);

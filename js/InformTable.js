@@ -8,6 +8,8 @@ InformTable = function()
 
 	this.cubes = [];
 	this.table = {};
+
+	// this.showClipping = true;
 }
 
 InformTable.prototype = Object.create(THREE.Object3D.prototype);
