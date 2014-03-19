@@ -5,6 +5,8 @@ var controls = null;
 var camera = null;
 
 var spotLight;
+var spotLightTarget;
+var spotTargetRotation;
 
 var clock = null;
 
@@ -37,9 +39,9 @@ function onLoad()
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0);
     renderer.shadowMapEnabled = true;
-    // renderer.shadowMapSoft = true;
-    // renderer.physicallyBasedShading = true;
-    renderer.shadowMapCullFace = THREE.CullFaceBack;
+    renderer.shadowMapSoft = true;
+    renderer.physicallyBasedShading = true;
+    // renderer.shadowMapCullFace = THREE.CullFaceBack;
     container.appendChild( renderer.domElement );
 
     // Create a new Three.js scene
@@ -54,6 +56,10 @@ function onLoad()
     controls = new THREE.OrbitControls(camera);
     controls.noKeys = true;
     controls.addEventListener( 'change', render );
+
+    // load resources
+    resMgr = new ResourceManager();
+    resMgr.initMaterials();
 
     // add lights
     initSceneLights();
@@ -99,15 +105,22 @@ function initSceneLights()
     // scene.add( dirLight[1] );
 
 
-      // object spotlight
-    spotLight = new THREE.SpotLight(0xFFFFEE, 1);
+    // object spotlight
+    spotTargetRotation = new THREE.Object3D();
+    scene.add(spotTargetRotation);
+    var geo = new THREE.CubeGeometry(2, 12, 12);
+    spotLightTarget = new THREE.Mesh(geo, resMgr.materials.white);
+    spotLightTarget.position.set(-100, 40, 20);
+    spotTargetRotation.add(spotLightTarget);
+
+    spotLight = new THREE.SpotLight(0xcccccc, 1);
     spotLight.angle = Math.PI/2;
-    spotLight.exponent = 12;
-    spotLight.position.set(12, 40, 30);
+    spotLight.exponent = 200;
+    spotLight.position = spotLightTarget.position;//.set(12, 40, 30);
     spotLight.target.position.set(0, 0, 0);
     spotLight.castShadow = true;
-    spotLight.shadowCameraNear = 10;
-    spotLight.shadowCameraFar = 60;
+    spotLight.shadowCameraNear = 70;
+    spotLight.shadowCameraFar = 140;
     spotLight.shadowDarkness = 0.7;
     // spotLight.shadowCameraVisible = true;
     scene.add(spotLight);
@@ -119,8 +132,6 @@ function initSceneLights()
 //***************************************************************************//
 function populateScene()
 {
-    resMgr = new ResourceManager();
-    resMgr.initMaterials();
 
     // var axes = buildAxes(300);
     // scene.add(axes);
@@ -151,9 +162,10 @@ var transFunc = function(x, y)
 function addGui()
 {
     var gui = new dat.GUI();
-    inform.cooldown = 0.55;
+    inform.cooldown = 0.65;
     gui.add(inform, 'cooldown', 0, 1);
     gui.add(world.context, 'imageSmoothingEnabled');
+    gui.add(world, 'absoluteHeight');
 /*
     var tmpF = f1.addFolder('Head Scale Vector');
     tmpF.add(genome.headJointsScaleFactor, 'x', 0.7, 1.2).onChange(onGeometryChanged);
@@ -229,7 +241,11 @@ function run()
         if (playerTarget != null) {
             world.pos.set(playerTarget.pos.x, playerTarget.pos.y, playerTarget.pos.z);
         }
-        inform.applyHeights(world.getHeightsAbs());
+        spotTargetRotation.rotation.y = -world.rotation;
+        spotLight.position = spotLightTarget.localToWorld(new THREE.Vector3());
+        spotLight.updateMatrix();
+
+        inform.applyHeights(world.getHeights());
 
         player.position.y = inform.cubes[15+15*30].position.z + 2.5;
     }
@@ -262,7 +278,7 @@ function onKeyDown(evt)
     var keyCode = getKeyCode(evt);
     keyPressed[keyCode] = true;
 
-    console.log(keyCode);
+    // console.log(keyCode);
 
     if (keyCode == 32) {
         animating = !animating;        

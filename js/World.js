@@ -12,6 +12,8 @@ World = function(pngFilename)
 	this.rotSpeed = 0;
 	this.rotAcc = 0;
 
+	this.absoluteHeight = true;
+
 	this.loaded = false;
 	this.canvas = document.getElementById("imgCanvas");
 	// this.canvas = document.createElement("canvas");
@@ -80,6 +82,16 @@ World.prototype.update = function()
 	this.context.translate(-15, -15);
 }
 
+World.prototype.getHeights = function()
+{
+	if (this.absoluteHeight) {
+		return this.getHeightsAbs();
+	}
+	else {
+		return this.getHeightsRel();
+	}
+}
+
 World.prototype.getHeightsAbs = function()
 {
 	var heightArr = [];
@@ -94,7 +106,7 @@ World.prototype.getHeightsAbs = function()
 	return heightArr;	
 }
 
-World.prototype.getHeights = function()
+World.prototype.getHeightsRel = function()
 {
 	var heightArr = [];
 

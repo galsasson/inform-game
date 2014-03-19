@@ -1,6 +1,6 @@
 var TABLE_WIDTH = 30;
 var TABLE_HEIGHT = 30;
-var SPACING = 0.1;
+var SPACING = 0.3;
 
 InformTable = function()
 {
