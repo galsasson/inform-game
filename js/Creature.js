@@ -2,8 +2,10 @@
 Creature = function(width, height)
 {
 	this.canvasSize = new THREE.Vector2(width, height);
-	this.pos = new THREE.Vector2(30, 56);
+	this.center = new THREE.Vector3(30, 56, 0);
+	this.pos = new THREE.Vector3(this.center.x, this.center.y, this.center.z);
 	this.time = 0;
+	this.noiseTime = 0;
 	this.canvas = document.createElement("canvas");
 	this.canvas.width = width;
 	this.canvas.height = height;
@@ -12,7 +14,10 @@ Creature = function(width, height)
 
 Creature.prototype.update = function()
 {
-	this.time += 0.1;
+	this.noiseTime += 0.01;
+	this.time += noise(this.noiseTime, 0, 0);
+	// console.log(noise(time, 0, 0));
+	this.pos.x = this.center.x + noise(this.noiseTime, 0, 0) * 10;
 }
 
 Creature.prototype.draw = function(ctx)
@@ -20,13 +25,13 @@ Creature.prototype.draw = function(ctx)
 	// this.context.fillStyle = "0xff000000";
 	// this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 	ctx.translate(this.pos.x, this.pos.y);
-	var brightness = (Math.sin(this.time) + 1) * 125;
+	var brightness = map(Math.sin(this.time), -1, 1, 100, 200);
 	// console.log(brightness);
 	// this.context.fillStyle = "rgb(" + brightness + "," + brightness + "," + brightness + ")";
 	var brStr = "rgb("+Math.floor(brightness).toString()+","+Math.floor(brightness).toString()+","+Math.floor(brightness).toString()+")";
 	// console.log(brStr);
 	ctx.fillStyle = brStr;//"rgb("+brStr +"," + brStr + "," + brStr+")";
-	ctx.fillRect(-1, 1, 3, 3);
+	ctx.fillRect(-1, -1, 3, 3);
 	ctx.translate(-this.pos.x, -this.pos.y);
 }
 

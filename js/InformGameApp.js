@@ -21,6 +21,9 @@ var world = {};
 
 var time = 0;
 
+var player;
+var playerTarget = null;
+
 //***************************************************************************//
 // initialize the renderer, scene, camera, and lights                        //
 //***************************************************************************//
@@ -36,7 +39,7 @@ function onLoad()
     renderer.shadowMapEnabled = true;
     // renderer.shadowMapSoft = true;
     // renderer.physicallyBasedShading = true;
-    // renderer.shadowMapCullFace = THREE.CullFaceBack;
+    renderer.shadowMapCullFace = THREE.CullFaceBack;
     container.appendChild( renderer.domElement );
 
     // Create a new Three.js scene
@@ -46,7 +49,7 @@ function onLoad()
     camera = new THREE.PerspectiveCamera( 20, 
         window.innerWidth / window.innerHeight, 1, 10000 );
         
-    camera.position.set( 100, 50, 0);
+    camera.position.set( 0, 50, -100);
     camera.lookAt(0, 0, 0);
     controls = new THREE.OrbitControls(camera);
     controls.noKeys = true;
@@ -84,7 +87,7 @@ function initSceneLights()
 {
     // Create an ambient and a directional light to show off the object
     var dirLight = [];
-    var ambLight = new THREE.AmbientLight( 0x222222 ); // soft white light
+    var ambLight = new THREE.AmbientLight( 0x777777 ); // soft white light
     dirLight[0] = new THREE.DirectionalLight( 0xffffff, 1);
     dirLight[0].position.set(0, 1, 1);
     dirLight[0].casrShadow = true;
@@ -99,8 +102,8 @@ function initSceneLights()
       // object spotlight
     spotLight = new THREE.SpotLight(0xFFFFEE, 1);
     spotLight.angle = Math.PI/2;
-    spotLight.exponent = 10;
-    spotLight.position.set(12, 40, 8);
+    spotLight.exponent = 12;
+    spotLight.position.set(12, 40, 30);
     spotLight.target.position.set(0, 0, 0);
     spotLight.castShadow = true;
     spotLight.shadowCameraNear = 10;
@@ -123,11 +126,12 @@ function populateScene()
     // scene.add(axes);
 
     var geo = new THREE.SphereGeometry(0.6, 12, 12);
-    var mesh = new THREE.Mesh(geo, resMgr.materials.character);
-    mesh.position.y += 4.4;
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-    scene.add(mesh);
+    player = new THREE.Mesh(geo, resMgr.materials.character);
+    // player.rotation.x = -Math.PI/2;
+    player.position.set(0.5, 0, 0.5);
+    player.castShadow = true;
+    player.receiveShadow = true;
+    scene.add(player);
 
     world = new World("art/test4.png");
 
@@ -146,10 +150,11 @@ var transFunc = function(x, y)
 
 function addGui()
 {
-/*
     var gui = new dat.GUI();
-    var f1 = gui.addFolder('HEAD GEOMETRY');
-    f1.add(genome, 'headBaseRadius', 5, 35).onChange(onGeometryChanged);
+    inform.cooldown = 0.55;
+    gui.add(inform, 'cooldown', 0, 1);
+    gui.add(world.context, 'imageSmoothingEnabled');
+/*
     var tmpF = f1.addFolder('Head Scale Vector');
     tmpF.add(genome.headJointsScaleFactor, 'x', 0.7, 1.2).onChange(onGeometryChanged);
     tmpF.add(genome.headJointsScaleFactor, 'y', 0.7, 1.2).onChange(onGeometryChanged);
@@ -205,19 +210,28 @@ function run()
     if (animating)
     {
         if (keyPressed[38]) {
+            playerTarget = null;
             world.propel(0.2);
         }
         else if (keyPressed[40]) {
+            playerTarget = null;
             world.propel(-0.2);
         }
         if (keyPressed[37]) {
-            world.turn(-0.01);
-        }
-        else if (keyPressed[39]) {
             world.turn(0.01);
         }
+        else if (keyPressed[39]) {
+            world.turn(-0.01);
+        }
+
         world.update();
-        inform.applyHeights(world.getHeights());
+        // handle player target (ride on monster)
+        if (playerTarget != null) {
+            world.pos.set(playerTarget.pos.x, playerTarget.pos.y, playerTarget.pos.z);
+        }
+        inform.applyHeights(world.getHeightsAbs());
+
+        player.position.y = inform.cubes[15+15*30].position.z + 2.5;
     }
 
     // Ask for another frame
@@ -248,10 +262,20 @@ function onKeyDown(evt)
     var keyCode = getKeyCode(evt);
     keyPressed[keyCode] = true;
 
-    // console.log(keyCode);
+    console.log(keyCode);
 
     if (keyCode == 32) {
         animating = !animating;        
+    }
+    if (keyCode == 65) {    // a
+        var a = new THREE.Vector3();
+        console.log(world.pos);
+        console.log(world.creature.pos);
+        a.subVectors(world.pos, world.creature.pos);
+        console.log(a.length());
+        if (a.length() < 4) {
+            playerTarget = world.creature;
+        }
     }
 
     evt.preventDefault();

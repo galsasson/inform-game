@@ -1,23 +1,24 @@
 
 var MAX_SPEED = 0.2;
 var MAX_ROT_SPEED = 0.15;
-var DEPTH_RANGE = 300;
+var DEPTH_RANGE = 512;
 
 World = function(pngFilename)
 {
-	this.pos = new THREE.Vector2(45, 45);
+	this.pos = new THREE.Vector3(45, 45, 0);
 	this.rotation = 0;
-	this.vel = new THREE.Vector2(0, 0);
-	this.acc = new THREE.Vector2(0, 0);
+	this.vel = new THREE.Vector3(0, 0, 0);
+	this.acc = new THREE.Vector3(0, 0, 0);
 	this.rotSpeed = 0;
 	this.rotAcc = 0;
 
 	this.loaded = false;
-	this.canvas = document.createElement("canvas");
+	this.canvas = document.getElementById("imgCanvas");
+	// this.canvas = document.createElement("canvas");
 	this.canvas.width = 30;
 	this.canvas.height = 30;
 	this.context = this.canvas.getContext("2d");
-	// this.context.imageSmoothingEnabled = false;
+	this.context.imageSmoothingEnabled = false;
 
 	this.creature = new Creature(120, 120);
 
@@ -60,7 +61,7 @@ World.prototype.update = function()
 	this.rotation += this.rotSpeed;
 	this.rotSpeed *= 0.7;
 
-	this.acc.set(0, 0);
+	this.acc.set(0, 0, 0);
 	this.rotAcc = 0;
 
 	// update the creature
@@ -77,6 +78,20 @@ World.prototype.update = function()
 	this.context.translate(this.pos.x, this.pos.y);
 	this.context.rotate(-this.rotation);
 	this.context.translate(-15, -15);
+}
+
+World.prototype.getHeightsAbs = function()
+{
+	var heightArr = [];
+
+	// get current data
+	var imgData = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height).data;
+	for (var i=0; i<imgData.length; i+=4)
+	{
+		heightArr[i/4] = 4/255 * imgData[i];
+	}
+
+	return heightArr;	
 }
 
 World.prototype.getHeights = function()
@@ -99,7 +114,7 @@ World.prototype.getHeights = function()
 
 World.prototype.propel = function(amount)
 {
-	this.acc.set(amount * -Math.cos(-this.rotation), amount * -Math.sin(-this.rotation));
+	this.acc.set(amount * Math.sin(this.rotation), amount * Math.cos(this.rotation), 0);
 }
 
 World.prototype.turn = function(amount)

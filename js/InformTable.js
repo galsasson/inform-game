@@ -8,6 +8,7 @@ InformTable = function()
 
 	this.cubes = [];
 	this.table = {};
+	this.cooldown = 0;
 
 	// this.showClipping = true;
 }
@@ -34,7 +35,7 @@ InformTable.prototype.init = function()
 		{
 			var cube = new THREE.Mesh(geo, resMgr.materials.white);
 			cube.position.set(topLeft.x + x + SPACING*x, topLeft.y + y + SPACING*y, 0);
-			this.cubes[y*TABLE_WIDTH + x] = cube;
+			this.cubes[(TABLE_HEIGHT-y-1)*TABLE_WIDTH + x] = cube;
 			this.table.add(cube);
 			cube.castShadow = true;
 			cube.receiveShadow = true;
@@ -46,7 +47,7 @@ InformTable.prototype.applyHeights = function(heights)
 {
 	for (var i=0; i<heights.length; i++)
 	{
-		this.cubes[i].position.z = heights[i];
+		this.cubes[i].position.z += (heights[i] - this.cubes[i].position.z) * (1-this.cooldown);
 
 		if (this.showClipping) {
 			if (heights[i] == 0 || heights[i] == 4) {
