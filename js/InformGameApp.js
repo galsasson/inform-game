@@ -285,11 +285,8 @@ function onKeyDown(evt)
     }
     if (keyCode == 65) {    // a
         var a = new THREE.Vector3();
-        console.log(world.pos);
-        console.log(world.creature.pos);
         a.subVectors(world.pos, world.creature.pos);
-        console.log(a.length());
-        if (a.length() < 4) {
+        if (a.length() < 3) {
             playerTarget = world.creature;
         }
     }
