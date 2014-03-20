@@ -16,8 +16,8 @@ World = function(pngFilename)
 
 	this.creature = new Creature(30, 60);
 	this.surfaces = [];
-	this.surfaces.push(new Surface(20, 20, 20, 20));
-	this.surfaces.push(new Surface(60, 100, 100, 20));
+	this.surfaces.push(new Surface(20, 20, 128, 20, 20, 40));
+	this.surfaces.push(new Surface(60, 100, 120, 100, 20, 200));
 	this.surfaces[0].setFunction(transFunc);
 	this.surfaces[1].setFunction(transFunc2);
 
