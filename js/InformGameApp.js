@@ -21,8 +21,6 @@ var exporter = {};
 var inform = {};
 var world = {};
 
-var time = 0;
-
 var player;
 var playerObject;
 
@@ -127,7 +125,7 @@ function populateScene()
     // var axes = buildAxes(300);
     // scene.add(axes);
 
-    player = new Player(45, 45);
+    player = new Player(40, 60);
 
     var geo = new THREE.SphereGeometry(0.6, 12, 12);
     playerObject = new THREE.Mesh(geo, resMgr.materials.character);
@@ -146,59 +144,14 @@ function populateScene()
     scene.add(inform);
 }
 
-var transFunc = function(x, y)
+var transFunc = function(x, y, time)
 {
-    return 2 + Math.cos(x*0.2 + time*0.1)*2 + Math.sin(y*0.3 + time*0.1)*2;
+    return 0.5 + 0.5 * Math.sin(.1 * x * y + time*0.02);
 }
 
-function addGui()
+var transFunc2 = function(x, y, time)
 {
-    var gui = new dat.GUI();
-    inform.cooldown = 0.65;
-    gui.add(inform, 'cooldown', 0, 1);
-    gui.add(world.context, 'imageSmoothingEnabled');
-    gui.add(world, 'absoluteHeight');
-/*
-    var tmpF = f1.addFolder('Head Scale Vector');
-    tmpF.add(genome.headJointsScaleFactor, 'x', 0.7, 1.2).onChange(onGeometryChanged);
-    tmpF.add(genome.headJointsScaleFactor, 'y', 0.7, 1.2).onChange(onGeometryChanged);
-    tmpF.add(genome.headJointsScaleFactor, 'z', 0.7, 1.2).onChange(onGeometryChanged);
-    var f4 = f1.addFolder('EYE GEOMETRY');
-    f4.add(genome, 'eyeRadius', 0, 10).onChange(onGeometryChanged);
-    f4.add(genome, 'eyeLidRadius', 0, 13).onChange(onGeometryChanged);
-    f4.add(genome, 'topLidAngle', 0, 2*Math.PI).onChange(onGeometryChanged);
-    f4.add(genome, 'bottomLidAngle', 0, 2*Math.PI).onChange(onGeometryChanged);
-
-    var f2 = gui.addFolder('TENTACLE GEOMETRY');
-    f2.add(genome, 'tentBaseRadius', 0, 20).onChange(onGeometryChanged);
-    f2.add(genome, 'numTents', 0, 32).onChange(onGeometryChanged);
-    f2.add(genome, 'numJoints', 0, 50).onChange(onGeometryChanged);
-
-    tmpF = f2.addFolder('Joint Scale Vector');
-    tmpF.add(genome.jointScaleVector, 'x', 0.7, 1.3).onChange(onGeometryChanged);
-    tmpF.add(genome.jointScaleVector, 'y', 0.7, 1.3).onChange(onGeometryChanged);
-    tmpF.add(genome.jointScaleVector, 'z', 0.7, 1.3).onChange(onGeometryChanged);
-    f2.add(genome, 'numSpikesPerJoint', 0, 10).onChange(onGeometryChanged);
-    f2.add(genome, 'spikesArcStart', 0.0, 2*Math.PI).onChange(onGeometryChanged);
-    f2.add(genome, 'spikesArcEnd', 0.0, 2*Math.PI).onChange(onGeometryChanged);
-    tmpF = f2.addFolder("Spike Scale Vector");
-    tmpF.add(genome.spikeScale, 'x', 0.7, 1.3).onChange(onGeometryChanged);
-    tmpF.add(genome.spikeScale, 'y', 0.7, 1.3).onChange(onGeometryChanged);
-    tmpF.add(genome.spikeScale, 'z', 0.7, 1.3).onChange(onGeometryChanged);
-    f2.add(genome, 'tentColorInc', 0, 10).onChange(onGeometryChanged);
-    f2.add(genome, 'tentColorBW').onChange(onGeometryChanged);
-
-    var f3 = gui.addFolder('ANIMATION');
-    f3.add(genome, 'tentFactor1', 0, 100);
-    f3.add(genome, 'tentFactor2', 0, 50);
-    f3.add(genome, 'tentFactor3', 0, 50);
-    f3.add(genome, 'tentFactor4', 0, 50);
-
-    var f5 = gui.addFolder('GEOMETRY DETAILS');
-    f5.add(genome, 'sphereDetail', 0, 40).onChange(onGeometryChanged);
-    f5.add(genome, 'cylinderDetail', 0, 40).onChange(onGeometryChanged);
-    f5.add(genome, 'eyeDetails', 0, 20).onChange(onGeometryChanged);
-*/
+    return 2 + Math.cos(x*0.2 + time*0.1)*2 + Math.sin(y*0.3 + time*0.1)*2;
 }
 
 //***************************************************************************//
@@ -257,12 +210,13 @@ function onKeyDown(evt)
 
     // console.log(keyCode);
 
-    if (keyCode == 32) {
+    if (keyCode == 80) {    // 'p'
         animating = !animating;        
     }
-    if (keyCode == 65) {    // a
+    if (keyCode == 65) {    // 'a'
         var a = new THREE.Vector3();
         a.subVectors(player.pos, world.creature.pos);
+        console.log(a.length());
         if (a.length() < 3) {
             player.attachTarget(world.creature);
         }
@@ -308,6 +262,21 @@ function onWindowResize()
 
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
+
+//********************************************************************************************************************************************//
+// GUI                                                                                                                                        //
+//********************************************************************************************************************************************//
+
+function addGui()
+{
+    var gui = new dat.GUI();
+    inform.changeDumpen = 0.75;
+    gui.add(inform, 'changeDumpen', 0, 1);
+    gui.add(world.context, 'imageSmoothingEnabled');
+    gui.add(world, 'absoluteHeight');
+}
+
+
 
 function getKeyCode(evt)
 {

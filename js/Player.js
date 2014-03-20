@@ -11,11 +11,17 @@ Player = function(x, y)
 	this.rotAcc = 0;
 
 	this.bRiding = false;
+	this.targetPos = null;
+	this.bShooting = false;
 }
 
 Player.prototype.update = function(keyPressed)
 {
 	this.handleKeys(keyPressed);
+
+	if (this.bRiding) {
+		this.pos.set(this.targetPos.x, this.targetPos.y, this.targetPos.z);
+	}
 
 	this.vel.add(this.acc);
 	if (this.vel.length() > MAX_SPEED) {
@@ -39,13 +45,13 @@ Player.prototype.update = function(keyPressed)
 
 Player.prototype.attachTarget = function(target)
 {
-	this.pos = target.pos;
+	this.targetPos = target.pos;
 	this.bRiding = true;
 }
 
 Player.prototype.releaseTarget = function()
 {
-	this.pos = this.pos.clone();
+	this.targetPos = null;
 	this.bRiding = false;
 }
 
@@ -68,6 +74,15 @@ Player.prototype.handleKeys = function(keyPressed)
     }
     else if (keyPressed[39]) {
         this.turn(-0.01);
+    }
+
+    if (keyPressed[32]) {		// space
+    	if (!bShooting) {
+    		// start wave chanrging
+    	}
+    	else {
+    		// release bullet
+    	}
     }
 }
 

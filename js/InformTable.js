@@ -8,7 +8,7 @@ InformTable = function()
 
 	this.cubes = [];
 	this.table = {};
-	this.cooldown = 0;
+	this.changeDumpen = 0;
 
 	// this.showClipping = true;
 }
@@ -47,14 +47,19 @@ InformTable.prototype.applyHeights = function(heights)
 {
 	for (var i=0; i<heights.length; i++)
 	{
-		this.cubes[i].position.z += (heights[i] - this.cubes[i].position.z) * (1-this.cooldown);
+		var cube = this.cubes[i];
+		if (!cube) {
+			continue;
+		}
+		
+		cube.position.z += (heights[i] - cube.position.z) * (1-this.changeDumpen);
 
 		if (this.showClipping) {
 			if (heights[i] == 0 || heights[i] == 4) {
-				this.cubes[i].material = resMgr.materials.black;
+				cube.material = resMgr.materials.black;
 			}
 			else {
-				this.cubes[i].material = resMgr.materials.white;
+				cube.material = resMgr.materials.white;
 			}			
 		}
 	}

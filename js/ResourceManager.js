@@ -7,7 +7,7 @@ ResourceManager.prototype.constructor = ResourceManager;
 
 ResourceManager.prototype.initMaterials = function()
 {
-	this.materials.white = new THREE.MeshPhongMaterial( { specular:0x999999, ambient: 0x888888 } );
+	this.materials.white = new THREE.MeshPhongMaterial( { specular:0x999999, ambient: 0x888888, shininess: 0 } );
 	this.materials.gray = new THREE.MeshLambertMaterial( { color: 0x888888, ambient: 0x444444 } );
 	this.materials.black = new THREE.MeshLambertMaterial( { color: 0x222222, ambient: 0x111111 } );
 	this.materials.red = new THREE.MeshLambertMaterial( {color: 0xff0000, ambient:0xbb0000});
