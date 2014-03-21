@@ -1,5 +1,5 @@
 
-var DEPTH_RANGE = 512;
+var DEPTH_RANGE = 100;
 
 World = function()
 {

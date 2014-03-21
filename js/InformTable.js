@@ -65,6 +65,19 @@ InformTable.prototype.applyHeights = function(heights)
 	}
 }
 
+InformTable.prototype.refreshClipping = function()
+{
+	if (this.showClipping) {
+		return;
+	}
+
+	for (var i=0; i<this.cubes.length; i++)
+	{
+		var cube = this.cubes[i];
+		cube.material = resMgr.materials.white;
+	}
+}
+
 InformTable.prototype.transform = function(func)
 {
 	for (var y=0; y<TABLE_HEIGHT; y++)

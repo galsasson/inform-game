@@ -263,9 +263,14 @@ function addGui()
     var gui = new dat.GUI();
     inform.dampSpeed = 0.75;
     gui.add(inform, 'dampSpeed', 0, 1);
-    gui.add(inform, 'showClipping');
+    gui.add(inform, 'showClipping').onChange(refreshClippingCB);
     gui.add(world.context, 'imageSmoothingEnabled');
     gui.add(world, 'absoluteHeight');
+}
+
+function refreshClippingCB()
+{
+    inform.refreshClipping();
 }
 
 
