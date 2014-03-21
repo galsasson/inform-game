@@ -18,6 +18,8 @@ World = function()
 	this.surfaces[0].setFunction(resMgr.surfaces[0]);
 	this.surfaces[1].setFunction(resMgr.surfaces[1]);
 
+	this.bullets = [];
+
 	this.img = new Image();
 }
 
@@ -50,7 +52,7 @@ World.prototype.update = function(center, rot)
 	this.context.fillStyle = "rgb(0, 0, 0)";
 	this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 	
-	this.context.translate(this.canvasCenter.x, this.canvasCenter.y);
+	this.context.translate(this.canvasCenter.x+0.5, this.canvasCenter.y);
 	this.context.rotate(rot);
 	this.context.translate(-center.x, -center.y)
 
@@ -68,9 +70,22 @@ World.prototype.update = function(center, rot)
 		surf.draw(this.context);
 	}
 
+	// update and draw bullets
+	for (var i=this.bullets.length-1; i>=0; i--)
+	{
+		var b = this.bullets[i];
+		var alive = b.update();
+		if (alive) {
+			b.draw(this.context);
+		}
+		else {
+			this.bullets.splice(i, 1);
+		}
+	}
+
 	this.context.translate(center.x, center.y);
 	this.context.rotate(-rot);
-	this.context.translate(-this.canvasCenter.x, -this.canvasCenter.y);
+	this.context.translate(-this.canvasCenter.x-0.5, -this.canvasCenter.y);
 
 	
 }
@@ -119,4 +134,9 @@ World.prototype.getHeightsRel = function()
 	}
 
 	return heightArr;
+}
+
+World.prototype.addBullet = function(bullet)
+{
+	this.bullets.push(bullet);
 }

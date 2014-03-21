@@ -77,8 +77,10 @@ Player.prototype.handleKeys = function(keyPressed)
     }
 
     if (keyPressed[32]) {		// space
-    	if (!bShooting) {
+    	if (!this.bShooting) {
     		// start wave chanrging
+    		var b = new Bullet(this.pos.x, this.pos.y, this.rotation);
+    		world.addBullet(b);
     	}
     	else {
     		// release bullet
