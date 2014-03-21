@@ -57,7 +57,7 @@ function onLoad()
 
     // load resources
     resMgr = new ResourceManager();
-    resMgr.initMaterials();
+    resMgr.init();
 
     // add lights
     initSceneLights();
@@ -144,16 +144,6 @@ function populateScene()
     scene.add(inform);
 }
 
-var transFunc = function(x, y, time)
-{
-    return 0.5 + 0.5 * Math.sin(.1 * x * y + time*0.02);
-}
-
-var transFunc2 = function(x, y, time)
-{
-    return noise(x*0.2, y*0.2, time*0.05);
-}
-
 //***************************************************************************//
 // render loop                                                               //
 //***************************************************************************//
@@ -216,9 +206,9 @@ function onKeyDown(evt)
     if (keyCode == 65) {    // 'a'
         var a = new THREE.Vector3();
         a.subVectors(player.pos, world.creature.pos);
-        console.log(a.length());
         if (a.length() < 3) {
             player.attachTarget(world.creature);
+            world.creature.toggleTarget();
         }
     }
 

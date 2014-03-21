@@ -11,7 +11,7 @@ Player = function(x, y)
 	this.rotAcc = 0;
 
 	this.bRiding = false;
-	this.targetPos = null;
+	this.target = null;
 	this.bShooting = false;
 }
 
@@ -20,7 +20,7 @@ Player.prototype.update = function(keyPressed)
 	this.handleKeys(keyPressed);
 
 	if (this.bRiding) {
-		this.pos.set(this.targetPos.x, this.targetPos.y, this.targetPos.z);
+		this.pos.set(this.target.pos.x, this.target.pos.y, this.target.pos.z);
 	}
 
 	this.vel.add(this.acc);
@@ -45,13 +45,13 @@ Player.prototype.update = function(keyPressed)
 
 Player.prototype.attachTarget = function(target)
 {
-	this.targetPos = target.pos;
+	this.target = target;
 	this.bRiding = true;
 }
 
 Player.prototype.releaseTarget = function()
 {
-	this.targetPos = null;
+	this.target = null;
 	this.bRiding = false;
 }
 

@@ -2,8 +2,15 @@
 ResourceManager = function()
 {
 	this.materials = {};
+	this.surfaces = [];
 }
 ResourceManager.prototype.constructor = ResourceManager;
+
+ResourceManager.prototype.init = function()
+{
+	this.initMaterials();
+	this.initSurfaces();
+}
 
 ResourceManager.prototype.initMaterials = function()
 {
@@ -31,6 +38,19 @@ ResourceManager.prototype.initMaterials = function()
 
 	// create shader material
 	// this.initShader();
+}
+
+ResourceManager.prototype.initSurfaces = function()
+{
+	this.surfaces = [];
+	this.surfaces[0] = function(x, y, time)
+	{
+    	return 0.5 + 0.5 * Math.sin(.1 * x * y + time*0.02);
+	};
+	this.surfaces[1] = function(x, y, time)
+	{
+    	return noise(x*0.2, y*0.2, time*0.05);
+	};
 }
 
 ResourceManager.prototype.initShader = function()
