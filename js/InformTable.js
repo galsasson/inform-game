@@ -8,9 +8,9 @@ InformTable = function()
 
 	this.cubes = [];
 	this.table = {};
-	this.changeDumpen = 0;
+	this.dampSpeed = 0;
 
-	// this.showClipping = true;
+	this.showClipping = false;
 }
 
 InformTable.prototype = Object.create(THREE.Object3D.prototype);
@@ -52,7 +52,7 @@ InformTable.prototype.applyHeights = function(heights)
 			continue;
 		}
 		
-		cube.position.z += (heights[i] - cube.position.z) * (1-this.changeDumpen);
+		cube.position.z += (heights[i] - cube.position.z) * (1-this.dampSpeed);
 
 		if (this.showClipping) {
 			if (heights[i] == 0 || heights[i] == 4) {

@@ -1,18 +1,15 @@
 
 var DEPTH_RANGE = 512;
 
-World = function(pngFilename)
+World = function()
 {
 	this.absoluteHeight = true;
 
 	this.loaded = false;
-	this.canvas = document.getElementById("imgCanvas");
 	// this.canvas = document.createElement("canvas");
-	this.canvas.width = 120;
-	this.canvas.height = 120;
+	this.canvas = document.getElementById("imgCanvas");
 	this.context = this.canvas.getContext("2d");
 	this.context.imageSmoothingEnabled = false;
-	this.canvasCenter = new THREE.Vector3(this.canvas.width/2, this.canvas.height/2, 0);
 
 	this.creature = new Creature(30, 60);
 	this.surfaces = [];
@@ -22,13 +19,25 @@ World = function(pngFilename)
 	this.surfaces[1].setFunction(resMgr.surfaces[1]);
 
 	this.img = new Image();
-	this.img.src = pngFilename;
-	this.img.onload = this.imageLoaded();
+}
+
+World.prototype.init = function(pngFilename)
+{
+	this.img.onload = world.imageLoaded;
+	this.img.src = pngFilename;	
 }
 
 World.prototype.imageLoaded = function()
 {
-	this.loaded = true;
+	// this is the image
+	var w = world;
+	var width = this.naturalWidth;
+	var height = this.naturalHeight;
+	console.log("World image loaded: "+width + "x" + height);
+	w.canvas.width = width;
+	w.canvas.height = height;
+	w.canvasCenter = new THREE.Vector3(width/2,height/2, 0);
+	w.loaded = true;
 }
 
 World.prototype.update = function(center, rot)
@@ -68,6 +77,10 @@ World.prototype.update = function(center, rot)
 
 World.prototype.getHeights = function()
 {
+	if (!this.loaded) {
+		return [];
+	}
+
 	if (this.absoluteHeight) {
 		return this.getHeightsAbs();
 	}
@@ -94,11 +107,11 @@ World.prototype.getHeightsRel = function()
 {
 	var heightArr = [];
 
-	var charHeight = this.context.getImageData(15, 15, 1, 1).data;
+	var charHeight = this.context.getImageData(60, 60, 1, 1).data;
 	var centerHeight = charHeight[0];
 
 	// get current data
-	var imgData = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height).data;
+	var imgData = this.context.getImageData(45, 45, 30, 30).data;
 	for (var i=0; i<imgData.length; i+=4)
 	{
 		var normalizedHeight = map(imgData[i], centerHeight-DEPTH_RANGE/2, centerHeight+DEPTH_RANGE/2, -1, 1);

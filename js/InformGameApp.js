@@ -135,7 +135,8 @@ function populateScene()
     playerObject.receiveShadow = true;
     scene.add(playerObject);
 
-    world = new World("art/test4.png");
+    world = new World();
+    world.init("art/test4.png");
 
     inform = new InformTable();
     inform.init();
@@ -260,8 +261,9 @@ function onWindowResize()
 function addGui()
 {
     var gui = new dat.GUI();
-    inform.changeDumpen = 0.75;
-    gui.add(inform, 'changeDumpen', 0, 1);
+    inform.dampSpeed = 0.75;
+    gui.add(inform, 'dampSpeed', 0, 1);
+    gui.add(inform, 'showClipping');
     gui.add(world.context, 'imageSmoothingEnabled');
     gui.add(world, 'absoluteHeight');
 }
