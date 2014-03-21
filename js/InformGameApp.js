@@ -151,7 +151,7 @@ var transFunc = function(x, y, time)
 
 var transFunc2 = function(x, y, time)
 {
-    return noise(x*0.2, y*0.2, time*0.05);//2 + Math.cos(x*0.2 + time*0.01)*2 + Math.sin(y*0.3 + time*0.03)*2;
+    return noise(x*0.2, y*0.2, time*0.05);
 }
 
 //***************************************************************************//
