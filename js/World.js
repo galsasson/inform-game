@@ -20,6 +20,8 @@ World = function()
 
 	this.bullets = [];
 
+	this.arrowDepth = 0;
+
 	this.img = new Image();
 }
 
@@ -87,7 +89,31 @@ World.prototype.update = function(center, rot)
 	this.context.rotate(-rot);
 	this.context.translate(-this.canvasCenter.x-0.5, -this.canvasCenter.y);
 
-	
+	this.drawPlayerArrow();
+}
+
+World.prototype.drawPlayerArrow = function()
+{
+	if (!this.loaded) {
+		return;
+	}
+
+	var ctx = this.context;
+
+	this.context.translate(this.canvasCenter.x+0.5, this.canvasCenter.y);
+	// this.context.rotate();
+
+	this.context.strokeStyle = "rgba(0, 0, 0, "+this.arrowDepth+")";
+	this.context.beginPath();
+	this.context.moveTo(0, 0);
+	this.context.lineTo(0, 8);
+	this.context.lineTo(-3, 5);
+	this.context.moveTo(0, 8);
+	this.context.lineTo(3, 5);
+	this.context.stroke();
+
+	// this.context.rotate(-rot);
+	this.context.translate(-this.canvasCenter.x-0.5, -this.canvasCenter.y);
 }
 
 World.prototype.getHeights = function()

@@ -58,34 +58,36 @@ Player.prototype.releaseTarget = function()
 Player.prototype.handleKeys = function(keyPressed)
 {
     if (keyPressed[38]) {
+    	// UP
     	if (this.bRiding) {
         	this.releaseTarget();
         }
         this.propel(0.2);
     }
     else if (keyPressed[40]) {
+    	// DOWN
     	if (this.bRiding) {
         	this.releaseTarget();
         }
         this.propel(-0.2);
     }
     if (keyPressed[37]) {
+    	// LEFT
         this.turn(0.01);
     }
     else if (keyPressed[39]) {
+    	// RIGHT
         this.turn(-0.01);
     }
 
-    if (keyPressed[32]) {		// space
-    	if (!this.bShooting) {
-    		// start wave chanrging
-    		var b = new Bullet(this.pos.x, this.pos.y, this.rotation);
-    		world.addBullet(b);
-    	}
-    	else {
-    		// release bullet
-    	}
-    }
+    // if (keyPressed[32]) {		// space
+    // 	if (!this.bShooting) {
+    // 		// start wave chanrging
+    // 	}
+    // 	else {
+    // 		// release bullet
+    // 	}
+    // }
 }
 
 Player.prototype.propel = function(amount)
@@ -96,5 +98,15 @@ Player.prototype.propel = function(amount)
 Player.prototype.turn = function(amount)
 {
 	this.rotAcc = amount;
+}
+
+Player.prototype.move = function(x, y)
+{
+	this.acc.set(x, y, 0);
+}
+
+Player.prototype.releaseBullet = function()
+{
+    return new Bullet(this.pos.x, this.pos.y, this.rotation);
 }
 

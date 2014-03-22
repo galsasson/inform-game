@@ -169,6 +169,8 @@ function run()
 
         // for visualization: draw the character at the right height
         playerObject.position.y = inform.cubes[15+15*30].position.z + 2.5;
+
+        // world.drawPlayerArrow();
     }
 
     // Ask for another frame
@@ -211,6 +213,10 @@ function onKeyDown(evt)
             player.attachTarget(world.creature);
             world.creature.toggleTarget();
         }
+    }
+    else if (keyCode == 32) // space
+    {
+        world.addBullet(player.releaseBullet());
     }
 
     evt.preventDefault();
@@ -262,10 +268,12 @@ function addGui()
 {
     var gui = new dat.GUI();
     inform.dampSpeed = 0.75;
-    gui.add(inform, 'dampSpeed', 0, 1);
+    gui.add(inform, 'dampSpeed', 0.0, 1.0);
     gui.add(inform, 'showClipping').onChange(refreshClippingCB);
     gui.add(world.context, 'imageSmoothingEnabled');
     gui.add(world, 'absoluteHeight');
+    world.arrowDepth = 0.6;
+    gui.add(world, 'arrowDepth', 0.0, 1.0);
 }
 
 function refreshClippingCB()

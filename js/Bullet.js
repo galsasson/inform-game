@@ -14,8 +14,8 @@ Bullet.prototype.update = function()
 
 	if (this.pos.x < 0 ||
 		this.pos.y < 0 ||
-		this.pos.x > 300 ||
-		this.pos.y > 300) {
+		this.pos.x > world.canvas.width ||
+		this.pos.y > world.canvas.height) {
 		return false;
 	}
 
@@ -25,9 +25,13 @@ Bullet.prototype.update = function()
 Bullet.prototype.draw = function(ctx)
 {
 	ctx.translate(this.pos.x, this.pos.y);
+	ctx.rotate(-this.angle);
 
-	ctx.fillStyle = "white";
-	ctx.fillRect(-0.5, -0.5, 1, 1);
-
+	ctx.strokeStyle = "rgba(255, 255, 255, 1)";
+	ctx.beginPath();
+	ctx.moveTo(0, 0);
+	ctx.lineTo(0, 1);
+	ctx.stroke();
+	ctx.rotate(this.angle);
 	ctx.translate(-this.pos.x, -this.pos.y);
 }
