@@ -160,6 +160,9 @@ function run()
         // update player, world, and the inform table
         player.update(keyPressed);
         world.update(player.pos, player.rotation);
+        if (!player.absControls) {
+            world.drawPlayerArrow();
+        }
         inform.applyHeights(world.getHeights());
 
         // update lighting position
@@ -274,6 +277,10 @@ function addGui()
     gui.add(world, 'absoluteHeight');
     world.arrowDepth = 0.6;
     gui.add(world, 'arrowDepth', 0.0, 1.0);
+    gui.add(player, 'absControls');
+    gui.add(player, 'moveForce', 0, 0.5);
+    gui.add(player, 'propelForce', 0, 0.3);
+    gui.add(player, 'rotateForce', 0, 0.3);
 }
 
 function refreshClippingCB()

@@ -88,8 +88,6 @@ World.prototype.update = function(center, rot)
 	this.context.translate(center.x, center.y);
 	this.context.rotate(-rot);
 	this.context.translate(-this.canvasCenter.x-0.5, -this.canvasCenter.y);
-
-	this.drawPlayerArrow();
 }
 
 World.prototype.drawPlayerArrow = function()

@@ -1,4 +1,4 @@
-var MAX_SPEED = 0.2;
+var MAX_SPEED = 1;
 var MAX_ROT_SPEED = 0.15;
 
 Player = function(x, y)
@@ -13,6 +13,11 @@ Player = function(x, y)
 	this.bRiding = false;
 	this.target = null;
 	this.bShooting = false;
+
+	this.absControls = false;
+	this.propelForce = 0.06;
+	this.rotateForce = 0.01;
+	this.moveForce = 0.1;
 }
 
 Player.prototype.update = function(keyPressed)
@@ -29,6 +34,7 @@ Player.prototype.update = function(keyPressed)
 	}
 
 	this.pos.add(this.vel);
+	
 	// fake friction
 	this.vel.multiplyScalar(0.7);
 
@@ -62,22 +68,42 @@ Player.prototype.handleKeys = function(keyPressed)
     	if (this.bRiding) {
         	this.releaseTarget();
         }
-        this.propel(0.2);
+        if (this.absControls) {
+        	this.move(0, this.moveForce);
+        }
+        else {
+        	this.propel(this.propelForce);
+    	}
     }
     else if (keyPressed[40]) {
     	// DOWN
     	if (this.bRiding) {
         	this.releaseTarget();
         }
-        this.propel(-0.2);
+        if (this.absControls) {
+        	this.move(0, -this.moveForce);
+        }
+        else {
+        	this.propel(-this.propelForce);
+        }
     }
     if (keyPressed[37]) {
     	// LEFT
-        this.turn(0.01);
+    	if (this.absControls) {
+        	this.move(this.moveForce, 0);
+        }
+        else {
+        	this.turn(this.rotateForce);
+    	}
     }
     else if (keyPressed[39]) {
     	// RIGHT
-        this.turn(-0.01);
+    	if (this.absControls) {
+        	this.move(-this.moveForce, 0);
+        }
+        else {
+        	this.turn(-this.rotateForce);
+        }
     }
 
     // if (keyPressed[32]) {		// space
@@ -102,7 +128,8 @@ Player.prototype.turn = function(amount)
 
 Player.prototype.move = function(x, y)
 {
-	this.acc.set(x, y, 0);
+	this.acc.x += x;
+	this.acc.y += y;
 }
 
 Player.prototype.releaseBullet = function()
