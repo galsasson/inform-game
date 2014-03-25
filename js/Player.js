@@ -1,4 +1,4 @@
-var MAX_SPEED = 1;
+var MAX_SPEED = 2;
 var MAX_ROT_SPEED = 0.15;
 
 Player = function(x, y)
@@ -15,7 +15,7 @@ Player = function(x, y)
 	this.bShooting = false;
 
 	this.absControls = false;
-	this.propelForce = 0.06;
+	this.propelForce = 0.14;
 	this.rotateForce = 0.01;
 	this.moveForce = 0.1;
 }

@@ -279,6 +279,7 @@ function addGui()
     gui.add(world, 'arrowDepth', 0.0, 1.0);
     gui.add(player, 'absControls');
     gui.add(player, 'moveForce', 0, 0.5);
+    player.propelForce = 0.14;
     gui.add(player, 'propelForce', 0, 0.3);
     gui.add(player, 'rotateForce', 0, 0.3);
 }
